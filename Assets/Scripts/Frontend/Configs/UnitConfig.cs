@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using CoreMechanics.Units;
 using UnityEngine;
 
-namespace CoreMechanics
+namespace Frontend.Configs
 {
 	[CreateAssetMenu(menuName = "Configs/Unit", fileName = "Unit", order = 0)]
-	public sealed class UnitConfig : ScriptableObject
+	public sealed class UnitConfig : ScriptableObject, IUnitConfig
 	{
 		[Serializable]
 		public struct TypeDamage
@@ -22,7 +23,7 @@ namespace CoreMechanics
 		[SerializeField] [TextArea] private string m_AttackPattern;
 
 		public int Health => m_Health;
-		public int Movement => m_Movement;
+		public int ActionPoints => m_Movement;
 		public UnitType Type => m_Type;
 		public ReadOnlyDictionary<UnitType, int> DamageByType { get; private set; }
 		public int[] AttackPattern { get; private set; }

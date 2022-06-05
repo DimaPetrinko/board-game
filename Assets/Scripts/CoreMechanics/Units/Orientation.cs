@@ -1,4 +1,4 @@
-﻿namespace CoreMechanics
+﻿namespace CoreMechanics.Units
 {
 	public enum Orientation
 	{

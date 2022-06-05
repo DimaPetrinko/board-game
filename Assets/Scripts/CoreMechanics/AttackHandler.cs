@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using CoreMechanics.Units;
 using UnityEngine;
 
 namespace CoreMechanics
@@ -30,13 +31,13 @@ namespace CoreMechanics
 		public static Vector2Int[] CreateAttackPositions(
 			Vector2Int position,
 			Orientation orientation,
-			UnitConfig config)
+			int[] attackPattern)
 		{
 			var result = new Vector2Int[9];
 			for (var i = 0; i < 9; i++)
 			{
 				var rotatedIndex = RotateIndex(i, orientation);
-				var offset = sMask[i] * config.AttackPattern[rotatedIndex];
+				var offset = sMask[i] * attackPattern[rotatedIndex];
 				switch (orientation)
 				{
 					case Orientation.North:

@@ -1,14 +1,15 @@
 using System;
 using UnityEngine;
 
-namespace CoreMechanics
+namespace CoreMechanics.Units
 {
 	public class Unit
 	{
 		public event Action Died;
 
-		private readonly UnitConfig mConfig;
+		private readonly IUnitConfig mConfig;
 		private int mHealth;
+		private int mActionPoints;
 		private Vector2Int mPosition;
 		private Orientation mOrientation;
 
@@ -22,6 +23,11 @@ namespace CoreMechanics
 			}
 		}
 		public bool Dead => Health == 0;
+		public int ActionPoints
+		{
+			get => mActionPoints;
+			set => mActionPoints = Mathf.Clamp(value, 0, mConfig.ActionPoints);
+		}
 		public UnitType Type => mConfig.Type;
 		public Vector2Int Position
 		{
@@ -43,7 +49,7 @@ namespace CoreMechanics
 		}
 		public Vector2Int[] AttackPositions { get; private set; }
 
-		public Unit(UnitConfig config)
+		public Unit(IUnitConfig config)
 		{
 			mConfig = config;
 
@@ -58,7 +64,7 @@ namespace CoreMechanics
 
 		private void UpdateAttackPositions()
 		{
-			AttackPositions = AttackHandler.CreateAttackPositions(Position, Orientation, mConfig);
+			AttackPositions = AttackHandler.CreateAttackPositions(Position, Orientation, mConfig.AttackPattern);
 		}
 	}
 }
