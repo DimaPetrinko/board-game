@@ -2,9 +2,8 @@
 
 namespace CoreMechanics.Utilities
 {
-	public partial struct Vec2Int
+	public struct Vec2Int
 	{
-
 		public int x;
 		public int y;
 
