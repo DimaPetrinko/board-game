@@ -11,6 +11,17 @@ namespace CoreMechanics
 		void MoveUnit(Unit performer, Vector2Int position);
 	}
 
+	public class FakeBoard : IBoard
+	{
+		public void MoveUnit(Unit performer, Vector2Int position)
+		{
+			// check if can move there
+			// if so - move
+			performer.Position = position;
+			// else - do nothing
+		}
+	}
+
 	public class ActionManager
 	{
 		private delegate void UnitAction(Unit performer, object extraParameters, IActionConfig config);
@@ -35,7 +46,7 @@ namespace CoreMechanics
 			};
 		}
 
-		public void PerformAction(ActionType type, Unit performer, object extraParameters)
+		public void PerformAction(ActionType type, Unit performer, object extraParameters = null)
 		{
 			var config = mActionConfigs[type];
 			if (!HasEnoughPoints(performer, config)) return;
@@ -50,6 +61,8 @@ namespace CoreMechanics
 
 		private void AttackFocus(Unit performer, object extraParameters, IActionConfig config)
 		{
+			var focusParameters = (FocusParameters[])extraParameters;
+			foreach (var p in focusParameters) performer.AssignAttackPoint(p.PositionIndex, p.Points);
 		}
 
 		private void Heal(Unit performer, object extraParameters, IActionConfig config)
@@ -61,7 +74,6 @@ namespace CoreMechanics
 		private void Move(Unit performer, object extraParameters, IActionConfig config)
 		{
 			var moveParameters = (MoveParameters)extraParameters;
-			// get next position availability from the board
 			mBoard.MoveUnit(performer, moveParameters.Position);
 		}
 

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Spear
   m_EditorClassIdentifier: 
   m_Health: 3
-  m_Movement: 1
+  m_ActionPoints: 1
+  m_AttackPoints: 3
   m_Type: 1
   m_DamageByType:
   - Type: 0

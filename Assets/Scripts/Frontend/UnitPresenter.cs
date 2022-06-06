@@ -26,11 +26,19 @@ namespace Frontend
 			if (mAttackCells == null || mAttackCells.Length < 9 || mAttackCells.Any(go => go == null))
 			{
 				mAttackCells = new GameObject[9];
-				m_AttackCellPrefab.SetActive(true);
-				for (var i = 0; i < 9; i++) mAttackCells[i] = Instantiate(m_AttackCellPrefab, transform);
 				m_AttackCellPrefab.SetActive(false);
+				for (var i = 0; i < 9; i++) mAttackCells[i] = Instantiate(m_AttackCellPrefab, transform);
 			}
-			for (var i = 0; i < 9; i++) mAttackCells[i].transform.position = Vector2IntToVector3(unit.AttackPositions[i]);
+
+			for (var i = 0; i < 9; i++)
+			{
+				if (i < unit.AttackPositions.Length)
+				{
+					mAttackCells[i].SetActive(true);
+					mAttackCells[i].transform.position = Vector2IntToVector3(unit.AttackPositions[i].Position);
+				}
+				else mAttackCells[i].SetActive(false);
+			}
 
 			Vector3 Vector2IntToVector3(Vector2Int vec) => new(vec.x, 0, vec.y);
 		}

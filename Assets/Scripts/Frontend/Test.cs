@@ -27,6 +27,7 @@ namespace Frontend
 
 		private void OnValidate()
 		{
+			if (!gameObject.activeSelf) return;
 			var u1 = new Unit(m_Config1);
 			u1.Position = m_Position1;
 			u1.Orientation = m_Orientation1;

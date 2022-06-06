@@ -4,13 +4,11 @@ using UnityEngine;
 namespace Frontend.Configs
 {
 	[CreateAssetMenu(menuName = "Configs/HealAction", fileName = "Heal", order = 0)]
-	public sealed class HealAction : ScriptableObject, IHealConfig
+	public sealed class HealAction : ActionConfig, IHealConfig
 	{
-		[SerializeField] private int m_Cost;
 		[SerializeField] private int m_HealAmount;
 
-		public ActionType Type => ActionType.Heal;
-		public int Cost => m_Cost;
+		public new ActionType Type => ActionType.Heal;
 		public int HealAmount => m_HealAmount;
 	}
 }

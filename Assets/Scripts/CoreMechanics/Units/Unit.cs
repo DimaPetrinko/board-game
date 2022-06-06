@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace CoreMechanics.Units
@@ -47,13 +48,19 @@ namespace CoreMechanics.Units
 				UpdateAttackPositions();
 			}
 		}
-		public Vector2Int[] AttackPositions { get; private set; }
+		public AttackPosition[] AttackPositions { get; private set; }
+		public int[] AttackPoints { get; }
+		public int FreeAttackPoints => mConfig.AttackPoints - AttackPoints.Sum();
 
 		public Unit(IUnitConfig config)
 		{
 			mConfig = config;
 
 			Health = mConfig.Health;
+			ActionPoints = mConfig.ActionPoints;
+			AttackPoints = new int[mConfig.AttackPositions.Length];
+
+			UpdateAttackPositions();
 		}
 
 		public int GetDamageForType(UnitType type)
@@ -62,9 +69,20 @@ namespace CoreMechanics.Units
 			return damage;
 		}
 
+		public void AssignAttackPoint(int positionIndex, int points)
+		{
+			points = Mathf.Clamp(points, 0, FreeAttackPoints);
+			AttackPoints[positionIndex] = points;
+		}
+
+		public void ResetActionPoints()
+		{
+			ActionPoints = mConfig.ActionPoints;
+		}
+
 		private void UpdateAttackPositions()
 		{
-			AttackPositions = AttackHandler.CreateAttackPositions(Position, Orientation, mConfig.AttackPattern);
+			AttackPositions = AttackHandler.CreateAttackPositions(Position, Orientation, mConfig.AttackPositions);
 		}
 	}
 }

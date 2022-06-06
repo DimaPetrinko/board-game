@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Horse
   m_EditorClassIdentifier: 
   m_Health: 3
-  m_Movement: 2
+  m_ActionPoints: 2
+  m_AttackPoints: 3
   m_Type: 2
   m_DamageByType:
   - Type: 0

@@ -16,4 +16,16 @@ namespace CoreMechanics.Actions
 
 		public MoveParameters(Vector2Int position) => Position = position;
 	}
+
+	public readonly struct FocusParameters
+	{
+		public readonly int PositionIndex;
+		public readonly int Points;
+
+		public FocusParameters(int positionIndex, int points)
+		{
+			PositionIndex = positionIndex;
+			Points = points;
+		}
+	}
 }
