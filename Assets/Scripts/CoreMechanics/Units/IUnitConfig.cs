@@ -1,14 +1,14 @@
 ﻿using System.Collections.ObjectModel;
-using UnityEngine;
+using CoreMechanics.Utilities;
 
 namespace CoreMechanics.Units
 {
 	public struct AttackPosition
 	{
 		public readonly int PatternIndex;
-		public Vector2Int Position;
+		public Vec2Int Position;
 
-		public AttackPosition(int index, Vector2Int position)
+		public AttackPosition(int index, Vec2Int position)
 		{
 			PatternIndex = index;
 			Position = position;

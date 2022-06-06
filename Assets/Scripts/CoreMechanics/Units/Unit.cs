@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
-using UnityEngine;
+using CoreMechanics.Managers;
+using CoreMechanics.Utilities;
 
 namespace CoreMechanics.Units
 {
@@ -11,7 +12,7 @@ namespace CoreMechanics.Units
 		private readonly IUnitConfig mConfig;
 		private int mHealth;
 		private int mActionPoints;
-		private Vector2Int mPosition;
+		private Vec2Int mPosition;
 		private Orientation mOrientation;
 
 		public int Health
@@ -19,7 +20,7 @@ namespace CoreMechanics.Units
 			get => mHealth;
 			set
 			{
-				mHealth = Mathf.Clamp(value, 0, mConfig.Health);
+				mHealth = Math.Clamp(value, 0, mConfig.Health);
 				if (mHealth == 0) Died?.Invoke();
 			}
 		}
@@ -27,10 +28,10 @@ namespace CoreMechanics.Units
 		public int ActionPoints
 		{
 			get => mActionPoints;
-			set => mActionPoints = Mathf.Clamp(value, 0, mConfig.ActionPoints);
+			set => mActionPoints = Math.Clamp(value, 0, mConfig.ActionPoints);
 		}
 		public UnitType Type => mConfig.Type;
-		public Vector2Int Position
+		public Vec2Int Position
 		{
 			get => mPosition;
 			set
@@ -71,7 +72,7 @@ namespace CoreMechanics.Units
 
 		public void AssignAttackPoint(int positionIndex, int points)
 		{
-			points = Mathf.Clamp(points, 0, FreeAttackPoints);
+			points = Math.Clamp(points, 0, FreeAttackPoints);
 			AttackPoints[positionIndex] = points;
 		}
 

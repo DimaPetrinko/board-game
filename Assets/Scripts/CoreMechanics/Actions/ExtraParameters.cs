@@ -1,5 +1,5 @@
 ﻿using CoreMechanics.Units;
-using UnityEngine;
+using CoreMechanics.Utilities;
 
 namespace CoreMechanics.Actions
 {
@@ -12,9 +12,9 @@ namespace CoreMechanics.Actions
 
 	public readonly struct MoveParameters
 	{
-		public readonly Vector2Int Position;
+		public readonly Vec2Int Position;
 
-		public MoveParameters(Vector2Int position) => Position = position;
+		public MoveParameters(Vec2Int position) => Position = position;
 	}
 
 	public readonly struct FocusParameters

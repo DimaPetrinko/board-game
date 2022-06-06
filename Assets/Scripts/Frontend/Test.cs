@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CoreMechanics;
+using CoreMechanics.Managers;
 using CoreMechanics.Units;
+using CoreMechanics.Utilities;
 using Frontend.Configs;
 using UnityEngine;
 
@@ -29,11 +30,11 @@ namespace Frontend
 		{
 			if (!gameObject.activeSelf) return;
 			var u1 = new Unit(m_Config1);
-			u1.Position = m_Position1;
+			u1.Position = new Vec2Int(m_Position1.x, m_Position1.y);
 			u1.Orientation = m_Orientation1;
 
 			var u2 = new Unit(m_Config2);
-			u2.Position = m_Position2;
+			u2.Position = new Vec2Int(m_Position2.x, m_Position2.y);
 			u2.Orientation = m_Orientation2;
 
 			var attackHandler = new AttackHandler();

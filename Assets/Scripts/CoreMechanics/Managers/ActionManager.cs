@@ -2,19 +2,19 @@
 using System.Linq;
 using CoreMechanics.Actions;
 using CoreMechanics.Units;
-using UnityEngine;
+using CoreMechanics.Utilities;
 
-namespace CoreMechanics
+namespace CoreMechanics.Managers
 {
 	// TODO: development is ongoing
 	public interface IBoard
 	{
-		void MoveUnit(Unit performer, Vector2Int position);
+		void MoveUnit(Unit performer, Vec2Int position);
 	}
 
 	public class FakeBoard : IBoard
 	{
-		public void MoveUnit(Unit performer, Vector2Int position)
+		public void MoveUnit(Unit performer, Vec2Int position)
 		{
 			// check if can move there
 			// if so - move

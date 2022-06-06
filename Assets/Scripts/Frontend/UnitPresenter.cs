@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using CoreMechanics.Units;
+using CoreMechanics.Utilities;
 using UnityEngine;
 
 namespace Frontend
@@ -40,7 +41,7 @@ namespace Frontend
 				else mAttackCells[i].SetActive(false);
 			}
 
-			Vector3 Vector2IntToVector3(Vector2Int vec) => new(vec.x, 0, vec.y);
+			Vector3 Vector2IntToVector3(Vec2Int vec) => new(vec.x, 0, vec.y);
 		}
 	}
 }

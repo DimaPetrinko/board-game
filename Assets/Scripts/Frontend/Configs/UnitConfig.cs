@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CoreMechanics.Units;
+using CoreMechanics.Utilities;
 using UnityEngine;
 
 namespace Frontend.Configs
@@ -31,7 +32,7 @@ namespace Frontend.Configs
 		public ReadOnlyDictionary<UnitType, int> DamageByType { get; private set; }
 		public AttackPosition[] AttackPositions { get; private set; }
 
-		private static readonly Vector2Int[] sMask =
+		private static readonly Vec2Int[] sMask =
 		{
 			new(-1, 1), new(0, 1), new(1, 1),
 			new(-1, 0), new(0, 0), new(1, 0),

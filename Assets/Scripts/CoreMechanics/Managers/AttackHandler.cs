@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CoreMechanics.Units;
-using UnityEngine;
+using CoreMechanics.Utilities;
 
-namespace CoreMechanics
+namespace CoreMechanics.Managers
 {
 	public class AttackHandler
 	{
@@ -15,7 +16,7 @@ namespace CoreMechanics
 		}
 
 		public static AttackPosition[] CreateAttackPositions(
-			Vector2Int position,
+			Vec2Int position,
 			Orientation orientation,
 			IEnumerable<AttackPosition> attackPositions)
 		{
@@ -33,21 +34,21 @@ namespace CoreMechanics
 			for (var i = 0; i < attacker.AttackPositions.Length; i++)
 			{
 				if (attacker.AttackPositions[i].Position != defender.Position) continue;
-				var damage = Mathf.Min(attacker.AttackPoints[i], attacker.GetDamageForType(defender.Type));
+				var damage = Math.Min(attacker.AttackPoints[i], attacker.GetDamageForType(defender.Type));
 				defender.Health -= damage;
 			}
 		}
 
-		private static Vector2Int RotateVectorToOrientation(Vector2Int input, Orientation orientation)
+		private static Vec2Int RotateVectorToOrientation(Vec2Int input, Orientation orientation)
 		{
 			var output = input;
 			for (var i = 0; i < (int)orientation; i++) output = RotateVector(output);
 			return output;
 		}
 
-		private static Vector2Int RotateVector(Vector2Int input)
+		private static Vec2Int RotateVector(Vec2Int input)
 		{
-			return new Vector2Int(input.y, -input.x);
+			return new Vec2Int(input.y, -input.x);
 		}
 	}
 }
