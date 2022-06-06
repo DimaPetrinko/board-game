@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace CoreMechanics
 {
+	// TODO: development is ongoing
 	public interface IBoard
 	{
 		void MoveUnit(Unit performer, Vector2Int position);
@@ -24,6 +25,7 @@ namespace CoreMechanics
 
 	public class ActionManager
 	{
+		// TODO: improve sending the parameters
 		private delegate void UnitAction(Unit performer, object extraParameters, IActionConfig config);
 
 		private readonly IBoard mBoard;

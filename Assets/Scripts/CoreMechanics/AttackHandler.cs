@@ -14,16 +14,6 @@ namespace CoreMechanics
 			Handle(secondAttacker, firstAttacker);
 		}
 
-		public void Handle(Unit attacker, Unit defender)
-		{
-			for (var i = 0; i < attacker.AttackPositions.Length; i++)
-			{
-				if (attacker.AttackPositions[i].Position != defender.Position) continue;
-				var damage = Mathf.Min(attacker.AttackPoints[i], attacker.GetDamageForType(defender.Type));
-				defender.Health -= damage;
-			}
-		}
-
 		public static AttackPosition[] CreateAttackPositions(
 			Vector2Int position,
 			Orientation orientation,
@@ -36,6 +26,16 @@ namespace CoreMechanics
 					return p;
 				})
 				.ToArray();
+		}
+
+		private static void Handle(Unit attacker, Unit defender)
+		{
+			for (var i = 0; i < attacker.AttackPositions.Length; i++)
+			{
+				if (attacker.AttackPositions[i].Position != defender.Position) continue;
+				var damage = Mathf.Min(attacker.AttackPoints[i], attacker.GetDamageForType(defender.Type));
+				defender.Health -= damage;
+			}
 		}
 
 		private static Vector2Int RotateVectorToOrientation(Vector2Int input, Orientation orientation)

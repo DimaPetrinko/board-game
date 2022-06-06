@@ -5,7 +5,7 @@ namespace CoreMechanics.Units
 {
 	public struct AttackPosition
 	{
-		public int PatternIndex;
+		public readonly int PatternIndex;
 		public Vector2Int Position;
 
 		public AttackPosition(int index, Vector2Int position)
