@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using CoreMechanics.Actions;
+using CoreMechanics.Board;
 using CoreMechanics.Managers;
 using CoreMechanics.Units;
 using CoreMechanics.Utilities;
@@ -12,6 +13,9 @@ namespace Frontend
 {
 	public sealed class TestUI : MonoBehaviour
 	{
+		[Header("Board")]
+		[SerializeField] private BoardConfig m_BoardConfig;
+
 		[Header("Unit")]
 		[SerializeField] private UnitConfig m_Config;
 		[SerializeField] private ActionConfig[] m_ActionConfigs;
@@ -24,8 +28,10 @@ namespace Frontend
 		[SerializeField] private Button m_Right;
 		[SerializeField] private Button m_Down;
 		[SerializeField] private Button m_Left;
-		[SerializeField] private Button m_RotateCw;
-		[SerializeField] private Button m_RotateCww;
+		[SerializeField] private Button m_RotateNorth;
+		[SerializeField] private Button m_RotateEast;
+		[SerializeField] private Button m_RotateSouth;
+		[SerializeField] private Button m_RotateWest;
 
 		[Header("Attack")]
 		[SerializeField] private Button m_Attack;
@@ -39,14 +45,30 @@ namespace Frontend
 		private void Awake()
 		{
 			mUnit = new Unit(m_Config);
-			mActionManager = new ActionManager(m_ActionConfigs, new FakeBoard());
+			var secondUnit = new Unit(m_Config);
+			var board = new Board(m_BoardConfig);
+			board.AddUnit(mUnit, new Vec2Int(0, 0));
+			board.AddUnit(secondUnit, new Vec2Int(0, 4));
+
+			mActionManager = new ActionManager(m_ActionConfigs, board);
+
+			mActionManager.PerformAction(ActionType.Rotate, secondUnit, new RotateParameters(Orientation.South));
+			secondUnit.ResetActionPoints();
+			mActionManager.PerformAction(ActionType.AttackFocus, secondUnit, new[] {new FocusParameters(1, 3)});
+			secondUnit.ResetActionPoints();
+
+			var secondPresenter = Instantiate(m_UnitPresenter);
+			secondPresenter.Present(secondUnit);
+			secondUnit.Died += _ => Destroy(secondPresenter.gameObject);
 
 			m_Up.onClick.AddListener(() => Move(mUnit.Position + new Vec2Int(0, 1)));
 			m_Right.onClick.AddListener(() => Move(mUnit.Position + new Vec2Int(1, 0)));
 			m_Down.onClick.AddListener(() => Move(mUnit.Position + new Vec2Int(0, -1)));
 			m_Left.onClick.AddListener(() => Move(mUnit.Position + new Vec2Int(-1, 0)));
-			m_RotateCw.onClick.AddListener(() => Rotate(mUnit.Orientation + 1));
-			m_RotateCww.onClick.AddListener(() => Rotate(mUnit.Orientation - 1));
+			m_RotateNorth.onClick.AddListener(() => Rotate(Orientation.North));
+			m_RotateEast.onClick.AddListener(() => Rotate(Orientation.East));
+			m_RotateSouth.onClick.AddListener(() => Rotate(Orientation.South));
+			m_RotateWest.onClick.AddListener(() => Rotate(Orientation.West));
 			m_ResetActionPoints.onClick.AddListener(() =>
 			{
 				mUnit.ResetActionPoints();
@@ -87,17 +109,13 @@ namespace Frontend
 
 		private void OnFocusChanged(int patternIndex, int points)
 		{
-			var attackPointIndex = -1;
+			var attackPointIndex = int.MaxValue;
 			for (var i = 0; i < mUnit.AttackPositions.Length; i++)
 			{
 				if (mUnit.AttackPositions[i].PatternIndex != patternIndex) continue;
 				attackPointIndex = i;
 				break;
 			}
-
-			if (attackPointIndex < 0) return;
-
-			if (points == 0 && mUnit.AttackPoints[attackPointIndex] == 0) return;
 
 			mActionManager.PerformAction(
 				ActionType.AttackFocus,
@@ -110,9 +128,8 @@ namespace Frontend
 
 		private void UpdateFocusUI()
 		{
-			var attackPointsByIndex = mUnit.AttackPoints
-				.Zip(mUnit.AttackPositions, (point, position) => new {Index = position.PatternIndex, Point = point})
-				.ToDictionary(p => p.Index, p => p.Point);
+			var attackPointsByIndex = mUnit.AttackPositions
+				.ToDictionary(p => p.PatternIndex, p => p.Points);
 
 			m_FocusUI.OnPointsLeftChanged(mUnit.FreeAttackPoints);
 			m_FocusUI.OnAttackPointsChanged(attackPointsByIndex);

@@ -7,7 +7,8 @@ namespace CoreMechanics.Units
 {
 	public class Unit
 	{
-		public event Action Died;
+		public delegate void UnitEvent(Unit sender);
+		public event UnitEvent Died;
 
 		private readonly IUnitConfig mConfig;
 		private int mHealth;
@@ -21,15 +22,17 @@ namespace CoreMechanics.Units
 			set
 			{
 				mHealth = Math.Clamp(value, 0, mConfig.Health);
-				if (mHealth == 0) Died?.Invoke();
+				if (mHealth == 0) Died?.Invoke(this);
 			}
 		}
+		public bool Healthy => Health == mConfig.Health;
 		public bool Dead => Health == 0;
 		public int ActionPoints
 		{
 			get => mActionPoints;
 			set => mActionPoints = Math.Clamp(value, 0, mConfig.ActionPoints);
 		}
+		public bool ReturnAttack => mConfig.ReturnAttack;
 		public UnitType Type => mConfig.Type;
 		public Vec2Int Position
 		{
@@ -50,8 +53,7 @@ namespace CoreMechanics.Units
 			}
 		}
 		public AttackPosition[] AttackPositions { get; private set; }
-		public int[] AttackPoints { get; }
-		public int FreeAttackPoints => mConfig.AttackPoints - AttackPoints.Sum();
+		public int FreeAttackPoints => mConfig.AttackPoints - AttackPositions.Sum(p => p.Points);
 
 		public Unit(IUnitConfig config)
 		{
@@ -59,9 +61,8 @@ namespace CoreMechanics.Units
 
 			Health = mConfig.Health;
 			ActionPoints = mConfig.ActionPoints;
-			AttackPoints = new int[mConfig.AttackPositions.Length];
 
-			UpdateAttackPositions();
+			AttackPositions = mConfig.AttackPositions;
 		}
 
 		public int GetDamageForType(UnitType type)
@@ -73,7 +74,7 @@ namespace CoreMechanics.Units
 		public void AssignAttackPoint(int positionIndex, int points)
 		{
 			points = Math.Clamp(points, 0, FreeAttackPoints);
-			AttackPoints[positionIndex] = points;
+			AttackPositions[positionIndex].Points = points;
 		}
 
 		public void ResetActionPoints()
@@ -83,7 +84,8 @@ namespace CoreMechanics.Units
 
 		private void UpdateAttackPositions()
 		{
-			AttackPositions = AttackHandler.CreateAttackPositions(Position, Orientation, mConfig.AttackPositions);
+			AttackPositions = AttackHandler.CreateAttackPositions(Position,
+				Orientation, AttackPositions, mConfig.AttackPositions);
 		}
 	}
 }

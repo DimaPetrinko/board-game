@@ -6,25 +6,26 @@ using CoreMechanics.Utilities;
 
 namespace CoreMechanics.Managers
 {
-	public class AttackHandler
+	public static class AttackHandler
 	{
-		public void ResolveClash(Unit firstAttacker, Unit secondAttacker)
+		public static void ResolveClash(Unit attacker, Unit defender)
 		{
-			Handle(firstAttacker, secondAttacker);
-			if (secondAttacker.Dead) return;
-			Handle(secondAttacker, firstAttacker);
+			Handle(attacker, defender);
+			if (!defender.ReturnAttack || defender.Dead) return;
+			Handle(defender, attacker);
 		}
 
 		public static AttackPosition[] CreateAttackPositions(
 			Vec2Int position,
 			Orientation orientation,
-			IEnumerable<AttackPosition> attackPositions)
+			IEnumerable<AttackPosition> attackPositions,
+			IEnumerable<AttackPosition> defaultPositions)
 		{
 			return attackPositions
-				.Select(p =>
+				.Zip(defaultPositions, (c, d) =>
 				{
-					p.Position = RotateVectorToOrientation(p.Position, orientation) + position;
-					return p;
+					c.Position = RotateVectorToOrientation(d.Position, orientation) + position;
+					return c;
 				})
 				.ToArray();
 		}
@@ -34,7 +35,7 @@ namespace CoreMechanics.Managers
 			for (var i = 0; i < attacker.AttackPositions.Length; i++)
 			{
 				if (attacker.AttackPositions[i].Position != defender.Position) continue;
-				var damage = Math.Min(attacker.AttackPoints[i], attacker.GetDamageForType(defender.Type));
+				var damage = Math.Min(attacker.AttackPositions[i].Points, attacker.GetDamageForType(defender.Type));
 				defender.Health -= damage;
 			}
 		}

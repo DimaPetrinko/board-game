@@ -37,9 +37,8 @@ namespace Frontend
 			u2.Position = new Vec2Int(m_Position2.x, m_Position2.y);
 			u2.Orientation = m_Orientation2;
 
-			var attackHandler = new AttackHandler();
-			if (m_FirstAttacks) attackHandler.ResolveClash(u1, u2);
-			else attackHandler.ResolveClash(u2, u1);
+			if (m_FirstAttacks) AttackHandler.ResolveClash(u1, u2);
+			else AttackHandler.ResolveClash(u2, u1);
 
 			Debug.Log($"First hp {u1.Health}, Second hp {u2.Health}");
 			if (u1.Dead) Debug.LogError("First is Dead!");
