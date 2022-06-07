@@ -1,32 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CoreMechanics.Actions;
+using CoreMechanics.Board;
 using CoreMechanics.Units;
-using CoreMechanics.Utilities;
 
 namespace CoreMechanics.Managers
 {
-	// TODO: development is ongoing
-	public interface IBoard
-	{
-		void MoveUnit(Unit performer, Vec2Int position);
-	}
-
-	public class FakeBoard : IBoard
-	{
-		public void MoveUnit(Unit performer, Vec2Int position)
-		{
-			// check if can move there
-			// if so - move
-			performer.Position = position;
-			// else - do nothing
-		}
-	}
-
 	public class ActionManager
 	{
 		// TODO: improve sending the parameters
-		private delegate void UnitAction(Unit performer, object extraParameters, IActionConfig config);
+		private delegate bool UnitAction(Unit performer, object extraParameters, IActionConfig config);
 
 		private readonly IBoard mBoard;
 		private readonly Dictionary<ActionType, IActionConfig> mActionConfigs;
@@ -50,39 +33,68 @@ namespace CoreMechanics.Managers
 
 		public void PerformAction(ActionType type, Unit performer, object extraParameters = null)
 		{
-			var config = mActionConfigs[type];
+			if (!mActionConfigs.TryGetValue(type, out var config)) return;
 			if (!HasEnoughPoints(performer, config)) return;
-			mActionMethods[type](performer, extraParameters, config);
-			UsePoints(performer, config);
+			if (mActionMethods[type](performer, extraParameters, config))
+				UsePoints(performer, config);
 		}
 
-		private void Attack(Unit performer, object extraParameters, IActionConfig config)
+		private bool Attack(Unit performer, object extraParameters, IActionConfig config)
 		{
-			// get receivers in attack position from the board
+			var defenders = performer.AttackPositions
+				.Where(p => p.Points > 0)
+				.OrderByDescending(p => p.Points)
+				.Select(p => p.Position)
+				.Select(mBoard.GetUnitInPosition)
+				.Where(u => u != null)
+				.ToArray();
+
+			if (defenders.Length == 0) return false;
+			foreach (var defender in defenders)
+			{
+				AttackHandler.ResolveClash(performer, defender);
+				if (performer.Dead) break;
+			}
+			return true;
 		}
 
-		private void AttackFocus(Unit performer, object extraParameters, IActionConfig config)
+		private bool AttackFocus(Unit performer, object extraParameters, IActionConfig config)
 		{
-			var focusParameters = (FocusParameters[])extraParameters;
-			foreach (var p in focusParameters) performer.AssignAttackPoint(p.PositionIndex, p.Points);
+			var focusParameters = (FocusParameters)extraParameters;
+			var status = false;
+			foreach (var parameters in focusParameters.Points
+				.OrderBy(p => p.Points - performer.AttackPositions[p.PositionIndex].Points))
+			{
+				if (parameters.PositionIndex >= performer.AttackPositions.Length
+					|| parameters.Points == performer.AttackPositions[parameters.PositionIndex].Points)
+					continue;
+				performer.AssignAttackPoint(parameters.PositionIndex, parameters.Points);
+				status = true;
+			}
+
+			return status;
 		}
 
-		private void Heal(Unit performer, object extraParameters, IActionConfig config)
+		private bool Heal(Unit performer, object extraParameters, IActionConfig config)
 		{
 			var healConfig = (IHealConfig)config;
+			if (performer.Healthy) return false;
 			performer.Health += healConfig.HealAmount;
+			return true;
 		}
 
-		private void Move(Unit performer, object extraParameters, IActionConfig config)
+		private bool Move(Unit performer, object extraParameters, IActionConfig config)
 		{
 			var moveParameters = (MoveParameters)extraParameters;
-			mBoard.MoveUnit(performer, moveParameters.Position);
+			return mBoard.MoveUnit(performer, moveParameters.Position);
 		}
 
-		private void Rotate(Unit performer, object extraParameters, IActionConfig config)
+		private bool Rotate(Unit performer, object extraParameters, IActionConfig config)
 		{
 			var rotateParameters = (RotateParameters)extraParameters;
+			if (performer.Orientation == rotateParameters.Orientation) return false;
 			performer.Orientation = rotateParameters.Orientation;
+			return true;
 		}
 
 		private static bool HasEnoughPoints(Unit performer, IActionConfig config)

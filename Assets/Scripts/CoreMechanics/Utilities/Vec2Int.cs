@@ -2,6 +2,7 @@
 
 namespace CoreMechanics.Utilities
 {
+	[Serializable]
 	public struct Vec2Int
 	{
 		public int x;

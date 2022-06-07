@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using CoreMechanics.Board;
 using CoreMechanics.Units;
-using CoreMechanics.Utilities;
 using UnityEngine;
 
 namespace Frontend.Configs
@@ -21,6 +21,7 @@ namespace Frontend.Configs
 		[SerializeField] private int m_Health;
 		[SerializeField] private int m_ActionPoints;
 		[SerializeField] private int m_AttackPoints;
+		[SerializeField] private bool m_ReturnAttack;
 		[SerializeField] private UnitType m_Type;
 		[SerializeField] private TypeDamage[] m_DamageByType;
 		[SerializeField] [TextArea] private string m_AttackPattern;
@@ -28,16 +29,10 @@ namespace Frontend.Configs
 		public int Health => m_Health;
 		public int ActionPoints => m_ActionPoints;
 		public int AttackPoints => m_AttackPoints;
+		public bool ReturnAttack => m_ReturnAttack;
 		public UnitType Type => m_Type;
 		public ReadOnlyDictionary<UnitType, int> DamageByType { get; private set; }
 		public AttackPosition[] AttackPositions { get; private set; }
-
-		private static readonly Vec2Int[] sMask =
-		{
-			new(-1, 1), new(0, 1), new(1, 1),
-			new(-1, 0), new(0, 0), new(1, 0),
-			new(-1, -1), new(0, -1), new(1, -1)
-		};
 
 		private void OnValidate()
 		{
@@ -56,8 +51,8 @@ namespace Frontend.Configs
 			var points = new List<AttackPosition>();
 			for (var i = 0; i < 9; i++)
 			{
-				var offset = sMask[i] * pattern[i];
-				offset.x = Mathf.Clamp(offset.x, -1, 1);
+				var offset = Board.Mask[i] * pattern[i];
+				offset.x = Math.Clamp(offset.x, -1, 1);
 				if (pattern[i] > 0) points.Add(new AttackPosition(i, offset));
 			}
 

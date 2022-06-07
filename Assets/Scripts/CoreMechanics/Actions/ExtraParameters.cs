@@ -19,10 +19,20 @@ namespace CoreMechanics.Actions
 
 	public readonly struct FocusParameters
 	{
+		public readonly IndexPoints[] Points;
+
+		public FocusParameters(IndexPoints[] points)
+		{
+			Points = points;
+		}
+	}
+
+	public readonly struct IndexPoints
+	{
 		public readonly int PositionIndex;
 		public readonly int Points;
 
-		public FocusParameters(int positionIndex, int points)
+		public IndexPoints(int positionIndex, int points)
 		{
 			PositionIndex = positionIndex;
 			Points = points;
