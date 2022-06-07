@@ -60,16 +60,19 @@ namespace CoreMechanics.Managers
 
 		private bool AttackFocus(Unit performer, object extraParameters, IActionConfig config)
 		{
-			var focusParameters = (FocusParameters[])extraParameters;
-			foreach (var p in focusParameters)
+			var focusParameters = (FocusParameters)extraParameters;
+			var status = false;
+			foreach (var parameters in focusParameters.Points
+				.OrderBy(p => p.Points - performer.AttackPositions[p.PositionIndex].Points))
 			{
-				if (p.PositionIndex >= performer.AttackPositions.Length
-					|| p.Points == 0 && performer.AttackPositions[p.PositionIndex].Points == 0)
-					return false;
-				performer.AssignAttackPoint(p.PositionIndex, p.Points);
+				if (parameters.PositionIndex >= performer.AttackPositions.Length
+					|| parameters.Points == performer.AttackPositions[parameters.PositionIndex].Points)
+					continue;
+				performer.AssignAttackPoint(parameters.PositionIndex, parameters.Points);
+				status = true;
 			}
 
-			return true;
+			return status;
 		}
 
 		private bool Heal(Unit performer, object extraParameters, IActionConfig config)
@@ -89,6 +92,7 @@ namespace CoreMechanics.Managers
 		private bool Rotate(Unit performer, object extraParameters, IActionConfig config)
 		{
 			var rotateParameters = (RotateParameters)extraParameters;
+			if (performer.Orientation == rotateParameters.Orientation) return false;
 			performer.Orientation = rotateParameters.Orientation;
 			return true;
 		}

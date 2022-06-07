@@ -45,6 +45,11 @@ namespace Frontend
 		private void Awake()
 		{
 			mUnit = new Unit(m_Config);
+			mUnit.Died += _ =>
+			{
+				Debug.LogError("YOU DIED");
+				m_UnitPresenter.gameObject.SetActive(false);
+			};
 			var secondUnit = new Unit(m_Config);
 			var board = new Board(m_BoardConfig);
 			board.AddUnit(mUnit, new Vec2Int(0, 0));
@@ -54,7 +59,8 @@ namespace Frontend
 
 			mActionManager.PerformAction(ActionType.Rotate, secondUnit, new RotateParameters(Orientation.South));
 			secondUnit.ResetActionPoints();
-			mActionManager.PerformAction(ActionType.AttackFocus, secondUnit, new[] {new FocusParameters(1, 3)});
+			mActionManager.PerformAction(ActionType.AttackFocus, secondUnit,
+				new FocusParameters(new[] {new IndexPoints(0, 3)}));
 			secondUnit.ResetActionPoints();
 
 			var secondPresenter = Instantiate(m_UnitPresenter);
@@ -77,7 +83,7 @@ namespace Frontend
 
 			m_Attack.onClick.AddListener(Attack);
 			m_Heal.onClick.AddListener(Heal);
-			m_FocusUI.FocusChanged += OnFocusChanged;
+			m_FocusUI.FocusApplied += OnFocusApplied;
 
 			UpdateFocusUI();
 			UpdateUnitVisuals();
@@ -107,20 +113,9 @@ namespace Frontend
 			UpdateUnitVisuals();
 		}
 
-		private void OnFocusChanged(int patternIndex, int points)
+		private void OnFocusApplied(FocusParameters focusParameters)
 		{
-			var attackPointIndex = int.MaxValue;
-			for (var i = 0; i < mUnit.AttackPositions.Length; i++)
-			{
-				if (mUnit.AttackPositions[i].PatternIndex != patternIndex) continue;
-				attackPointIndex = i;
-				break;
-			}
-
-			mActionManager.PerformAction(
-				ActionType.AttackFocus,
-				mUnit,
-				new[] {new FocusParameters(attackPointIndex, points)});
+			mActionManager.PerformAction(ActionType.AttackFocus, mUnit, focusParameters);
 
 			UpdateFocusUI();
 			UpdateUnitVisuals();
@@ -133,6 +128,7 @@ namespace Frontend
 
 			m_FocusUI.OnPointsLeftChanged(mUnit.FreeAttackPoints);
 			m_FocusUI.OnAttackPointsChanged(attackPointsByIndex);
+			m_FocusUI.OnApplied();
 		}
 
 		private void UpdateUnitVisuals()
