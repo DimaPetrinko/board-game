@@ -1,6 +1,6 @@
 ﻿using CoreMechanics.Utilities;
 
-namespace CoreMechanics.Board
+namespace CoreMechanics.Boards
 {
 	public interface IBoardConfig
 	{
