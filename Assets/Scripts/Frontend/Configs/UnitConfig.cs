@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using CoreMechanics.Board;
+using CoreMechanics.Boards;
 using CoreMechanics.Units;
 using UnityEngine;
 
