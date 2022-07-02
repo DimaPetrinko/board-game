@@ -3,7 +3,7 @@ using CoreMechanics.Units;
 using CoreMechanics.Utilities;
 using UnityEngine;
 
-namespace Frontend
+namespace Frontend.Testing.UnitsAttacks
 {
 	public class UnitPresenter : MonoBehaviour
 	{
