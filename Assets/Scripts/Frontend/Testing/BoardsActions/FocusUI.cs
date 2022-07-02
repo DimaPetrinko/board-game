@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Frontend
+namespace Frontend.Testing.BoardsActions
 {
 	public sealed class FocusUI : MonoBehaviour
 	{

@@ -1,17 +1,18 @@
 ﻿using System.Linq;
 using CoreMechanics.Actions;
-using CoreMechanics.Board;
+using CoreMechanics.Boards;
 using CoreMechanics.Managers;
 using CoreMechanics.Units;
 using CoreMechanics.Utilities;
 using Frontend.Configs;
+using Frontend.Testing.UnitsAttacks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Frontend
+namespace Frontend.Testing.BoardsActions
 {
-	public sealed class TestUI : MonoBehaviour
+	public sealed class BoardsActionsTest : MonoBehaviour
 	{
 		[Header("Board")]
 		[SerializeField] private BoardConfig m_BoardConfig;

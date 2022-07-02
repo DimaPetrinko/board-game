@@ -6,9 +6,9 @@ using CoreMechanics.Utilities;
 using Frontend.Configs;
 using UnityEngine;
 
-namespace Frontend
+namespace Frontend.Testing.UnitsAttacks
 {
-	public class Test : MonoBehaviour
+	public class UnitsAttacksTest : MonoBehaviour
 	{
 		[Header("First unit")]
 		public bool m_FirstAttacks;

@@ -3,7 +3,7 @@ using System.Linq;
 using CoreMechanics.Units;
 using CoreMechanics.Utilities;
 
-namespace CoreMechanics.Board
+namespace CoreMechanics.Boards
 {
 	public sealed class Board : IBoard
 	{

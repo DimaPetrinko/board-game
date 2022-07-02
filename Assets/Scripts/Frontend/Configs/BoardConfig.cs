@@ -1,4 +1,4 @@
-﻿using CoreMechanics.Board;
+﻿using CoreMechanics.Boards;
 using CoreMechanics.Utilities;
 using UnityEngine;
 

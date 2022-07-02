@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CoreMechanics.Actions;
-using CoreMechanics.Board;
+using CoreMechanics.Boards;
 using CoreMechanics.Units;
 
 namespace CoreMechanics.Managers
 {
-	public class ActionManager
+	public sealed class ActionManager
 	{
 		// TODO: improve sending the parameters
 		private delegate bool UnitAction(Unit performer, object extraParameters, IActionConfig config);

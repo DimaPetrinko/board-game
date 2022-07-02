@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Frontend
+namespace Frontend.Testing.BoardsActions
 {
 	[RequireComponent(typeof(Button))]
 	public sealed class AttackPointUI : MonoBehaviour
