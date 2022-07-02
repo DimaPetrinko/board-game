@@ -1,14 +1,29 @@
 using System;
 using System.Linq;
+using CoreMechanics.Actions;
 using CoreMechanics.Managers;
 using CoreMechanics.Utilities;
 
 namespace CoreMechanics.Units
 {
-	public class Unit
+	public readonly struct UnitTypePositionPair
 	{
-		public delegate void UnitEvent(Unit sender);
+		public readonly UnitType UnitType;
+		public readonly Vec2Int Position;
+
+		public UnitTypePositionPair(UnitType unitType, Vec2Int position)
+		{
+			UnitType = unitType;
+			Position = position;
+		}
+	}
+	public delegate void UnitEvent(Unit sender);
+	public delegate void UnitActionRequest(Unit sender, ActionType actionType, object extraParameters = null);
+
+	public sealed class Unit
+	{
 		public event UnitEvent Died;
+		public event UnitActionRequest ActionRequested;
 
 		private readonly IUnitConfig mConfig;
 		private int mHealth;
@@ -80,6 +95,11 @@ namespace CoreMechanics.Units
 		public void ResetActionPoints()
 		{
 			ActionPoints = mConfig.ActionPoints;
+		}
+
+		public void RequestAction(ActionType actionType, object extraParameters = null)
+		{
+			ActionRequested?.Invoke(this, actionType, extraParameters);
 		}
 
 		private void UpdateAttackPositions()
