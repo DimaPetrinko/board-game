@@ -63,10 +63,10 @@ namespace CoreMechanics.Managers
 			var focusParameters = (FocusParameters)extraParameters;
 			var status = false;
 			foreach (var parameters in focusParameters.Points
+				.Where(p => p.PositionIndex < performer.AttackPositions.Length)
 				.OrderBy(p => p.Points - performer.AttackPositions[p.PositionIndex].Points))
 			{
-				if (parameters.PositionIndex >= performer.AttackPositions.Length
-					|| parameters.Points == performer.AttackPositions[parameters.PositionIndex].Points)
+				if (parameters.Points == performer.AttackPositions[parameters.PositionIndex].Points)
 					continue;
 				performer.AssignAttackPoint(parameters.PositionIndex, parameters.Points);
 				status = true;

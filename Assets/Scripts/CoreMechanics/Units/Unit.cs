@@ -45,8 +45,9 @@ namespace CoreMechanics.Units
 		public int ActionPoints
 		{
 			get => mActionPoints;
-			set => mActionPoints = Math.Clamp(value, 0, mConfig.ActionPoints);
+			set => mActionPoints = Math.Clamp(value, 0, MaxActionPoints);
 		}
+		public int MaxActionPoints => mConfig.ActionPoints;
 		public bool ReturnAttack => mConfig.ReturnAttack;
 		public UnitType Type => mConfig.Type;
 		public Vec2Int Position
@@ -75,7 +76,7 @@ namespace CoreMechanics.Units
 			mConfig = config;
 
 			Health = mConfig.Health;
-			ActionPoints = mConfig.ActionPoints;
+			ActionPoints = MaxActionPoints;
 
 			AttackPositions = mConfig.AttackPositions;
 		}
@@ -94,7 +95,7 @@ namespace CoreMechanics.Units
 
 		public void ResetActionPoints()
 		{
-			ActionPoints = mConfig.ActionPoints;
+			ActionPoints = MaxActionPoints;
 		}
 
 		public void RequestAction(ActionType actionType, object extraParameters = null)

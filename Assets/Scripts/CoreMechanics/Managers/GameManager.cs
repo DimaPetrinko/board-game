@@ -31,6 +31,8 @@ namespace CoreMechanics.Managers
 		public GameManager(IConfigsManager configsManager)
 		{
 			mConfigsManager = configsManager;
+
+			mBoard = new Board(mConfigsManager.BoardConfig);
 		}
 
 		public void RegisterTeam(string name)
@@ -59,8 +61,9 @@ namespace CoreMechanics.Managers
 			mTurnManager = new TurnManager(Teams);
 			mTurnManager.GameCompleted += OnGameCompleted;
 
-			mBoard = new Board(mConfigsManager.BoardConfig);
 			mActionManager = new ActionManager(mConfigsManager.ActionConfigs, mBoard);
+
+			mTurnManager.StartGame();
 		}
 
 		public void ResetGame()
@@ -75,7 +78,7 @@ namespace CoreMechanics.Managers
 			mTurnManager.GameCompleted -= OnGameCompleted;
 			mTurnManager = null;
 
-			mBoard = null;
+			mBoard = new Board(mConfigsManager.BoardConfig);
 			mActionManager = null;
 		}
 

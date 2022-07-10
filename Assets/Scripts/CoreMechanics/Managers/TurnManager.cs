@@ -32,6 +32,7 @@ namespace CoreMechanics.Managers
 		public void StartGame()
 		{
 			NextTurn();
+			foreach (var team in mTeams) team.EndTurn();
 		}
 
 		private void NextTurn()
