@@ -40,6 +40,8 @@ namespace CoreMechanics.Teams
 
 		public void StartTurn()
 		{
+			foreach (var unit in Units) unit.ResetActionPoints();
+
 			TurnStarted?.Invoke();
 		}
 
